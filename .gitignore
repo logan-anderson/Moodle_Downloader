@@ -2,3 +2,5 @@
 config.json
 # Ignore generated pdf's
 *.pdf
+# ignore backups of files
+*.back

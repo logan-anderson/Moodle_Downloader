@@ -34,34 +34,75 @@ def write_doc(doc, name):
     file.close
 
     
+
+def print_downloaded():
+    print('Downloaded:')
+    print('===========')
+    for name in config["downloaded"]:
+        print(name)
+    print('================================================================================')
+    
+def download_stnd_moodle():
+    website = session.get("https://moodle31.upei.ca/course/view.php?id=" 
+                           + str(config["course_id"]))
+    html = website.text
+    soup = BeautifulSoup(html, "html.parser")
+    links = soup.findAll(class_='activityinstance')
+
+    print_downloaded()
+    print('Downloading:')
+    print('===========')
+
+    for link in links:
+        name = link.find(class_ = "instancename").text
+        if config["match"] not in name.lower() or name in config["downloaded"]:
+            continue
+        print(name)
+        url = link.a["href"]
+        doc = get_moodle_doc(url)
+        write_doc(doc['doc'], doc['name'])
+        config["downloaded"].append(name)
+        print('\t', doc['name'])
+
+    
+
+def download_cezar():
+    semester = config["semester"].split('-')
+    year = semester[0]
+    season = semester[1]
+    course = config["course"]
+    website = requests.get(
+        'http://www.smcs.upei.ca/~ccampeanu/Teach/' 
+        + season 
+        + '/' 
+        + year 
+        + '/' 
+        + course 
+        + '/LN/'
+        )
+    html = website.text
+    links = re.findall('"(http://.*4.pdf?)"', html)
+
+    print('Downloading:')
+    print('===========')
+
+    for link in links:
+        name = link[(link.rfind('/')+1 ):]
+        print(name)
+        doc = session.get(link).content
+        write_doc(doc, name)
+
+
 config = json.loads(open('config.json', 'r').read())
-
 session = login()
-website = session.get("https://moodle31.upei.ca/course/view.php?id=" 
-                       + str(config["course_id"]))
-html = website.text
-soup = BeautifulSoup(html, "html.parser")
-links = soup.findAll(class_='activityinstance')
 
-print('Downloaded:')
-print('===========')
-for name in config["downloaded"]:
-    print(name)
-print('================================================================================')
-print('Downloading:')
-print('===========')
-
-for link in links:
-    name = link.find(class_ = "instancename").text
-    if config["match"] not in name.lower() or name in config["downloaded"]:
-        continue
-    print(name)
-    url = link.a["href"]
-    doc = get_moodle_doc(link.a['href'])
-    write_doc(doc['doc'], doc['name'])
-    config["downloaded"].append(name)
-    print('\t', doc['name'])
+if config["course_type"] == "stnd_moodle": download_stnd_moodle()
+elif config["course_type"] == "cezar": download_cezar()
 
 config_file = open('config.json', 'w')
-config_file.write(json.dumps(config))
+pretty_json = json.dumps(config,
+    indent=4, 
+    separators=(',', ': ')
+    )
+config_file.write(pretty_json)
 config_file.close()

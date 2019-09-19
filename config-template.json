@@ -3,5 +3,8 @@
     "downloaded": [],
     "course_id": "",
     "username": "",
-    "password": ""
+    "password": "",
+    "course_type": "",
+    "course": "",
+    "semester": ""
 }

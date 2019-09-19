@@ -11,6 +11,17 @@ Fill in the required data in the file.
     - The number at the end of the url for a moodle course
 - username and password
     - Your login credentials
+- course_type
+    - either stnd_moodle or cezar at the moment
+- semester
+    - the semester in which the course takes place in the form <year>-<first letter of season>
+    - ex 2019-F
+- course
+    - the course code in the form <subeject><course number>
+    - ex CS3610
+- downloaded
+    - and array of all previously downloaded documents.
+    - cezars type courses do not track downloads because the documens might be updated without notice
 
 Example config.json
 ```
