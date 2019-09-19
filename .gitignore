@@ -1,0 +1,4 @@
+# Ignore config file to not upload private information
+config.json
+# Ignore generated pdf's
+*.pdf
