@@ -93,7 +93,6 @@ def download_cezar():
         write_doc(doc, name)
 
 if __name__== "__main__":
-    print('test')
     config = json.loads(open('config.json', 'r').read())
     session = login()
 
