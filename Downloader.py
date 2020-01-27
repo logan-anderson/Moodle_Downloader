@@ -87,6 +87,7 @@ def download_cezar():
     print('===========')
 
     for link in links:
+        link = link[link.rfind('http'):]
         name = link[(link.rfind('/')+1 ):]
         print(name)
         doc = session.get(link).content
